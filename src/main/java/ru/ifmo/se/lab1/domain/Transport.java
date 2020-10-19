@@ -24,6 +24,14 @@ public class Transport extends Movable implements Animated {
         return name;
     }
 
+    public int getCapacity() {
+        return capacity;
+    }
+
+    public HashSet<Human> getPassengers() {
+        return passengers;
+    }
+
     public boolean addPassenger(Human passenger) {
         if (passengers.size() < capacity && passenger.isSameLocation(this)) {
             passengers.add(passenger);

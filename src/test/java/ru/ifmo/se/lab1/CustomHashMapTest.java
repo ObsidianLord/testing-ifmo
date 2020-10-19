@@ -83,6 +83,6 @@ public class CustomHashMapTest {
             hashMap.put(i, "DUMMY");
         }
 
-        Assert.assertEquals(4_194_304, hashMap.getArraySize()); // 8 * 2^19
+        Assert.assertEquals(2_097_152, hashMap.getArraySize()); // 8 * 2^18
     }
 }

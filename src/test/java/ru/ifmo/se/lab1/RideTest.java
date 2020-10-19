@@ -8,6 +8,107 @@ import ru.ifmo.se.lab1.domain.world.*;
 public class RideTest {
 
     @Test
+    public void testCantExceedTransportCapacity() {
+        World world = new World(new MapTile[1][1], Weather.SUNNY);
+        Human first = new Human(world, 0, 0, "Персонаж 1", null);
+        Human second = new Human(world, 0, 0, "Персонаж 2", null);
+        Transport bubble = new Transport(world, 0, 0, "Пузырь", 1);
+        first.getIntoTransport(bubble);
+        second.getIntoTransport(bubble);
+
+        Assert.assertEquals(bubble.getCapacity(), bubble.getPassengers().size());
+        Assert.assertTrue(bubble.getPassengers().contains(first));
+        Assert.assertFalse(bubble.getPassengers().contains(second));
+        Assert.assertEquals(bubble, first.getTransport());
+        Assert.assertNull(second.getTransport());
+    }
+
+    @Test
+    public void testTransportChange() {
+        World world = new World(new MapTile[1][1], Weather.SUNNY);
+        Human character = new Human(world, 0, 0, "Персонаж 1", null);
+        Transport bubble = new Transport(world, 0, 0, "Пузырь", 1);
+        Transport ATAT = new Transport(world, 0, 0, "AT-AT", 3);
+
+        character.getIntoTransport(bubble);
+        character.getIntoTransport(ATAT);
+
+        Assert.assertEquals(ATAT, character.getTransport());
+        Assert.assertTrue(bubble.getPassengers().isEmpty());
+        Assert.assertTrue(ATAT.getPassengers().contains(character));
+    }
+
+    @Test
+    public void testCanGetOutOfTransport() {
+        World world = new World(new MapTile[1][1], Weather.SUNNY);
+        Human character = new Human(world, 0, 0, "Персонаж 1", null);
+        Transport bubble = new Transport(world, 0, 0, "Пузырь", 1);
+
+        character.getIntoTransport(bubble);
+        character.getOutOfTransport();
+
+        Assert.assertNull(character.getTransport());
+        Assert.assertTrue(bubble.getPassengers().isEmpty());
+    }
+
+    @Test
+    public void testCanPhysics() {
+        World world = new World(new MapTile[][]{
+                {
+                        new SlopeMapTile(Direction.EAST, Decoration.GRASS),
+                        new FlatMapTile(Decoration.GRASS),
+                        new SlopeMapTile(Direction.SOUTH, Decoration.GRASS),
+                },
+                {
+                        new FlatMapTile(Decoration.GRASS),
+                        new FlatMapTile(Decoration.GRASS),
+                        new FlatMapTile(Decoration.GRASS),
+                },
+                {
+                        new SlopeMapTile(Direction.NORTH, Decoration.GRASS),
+                        new FlatMapTile(Decoration.GRASS),
+                        new SlopeMapTile(Direction.WEST, Decoration.GRASS),
+                },
+        }, Weather.SUNNY);
+        Human character = new Human(world, 0, 0, "Персонаж 1", null);
+        Transport bubble = new Transport(world, 0, 0, "Пузырь", 1);
+
+        character.getIntoTransport(bubble);
+
+        bubble.tick();
+        Assert.assertEquals(1, character.getX());
+        Assert.assertEquals(0, character.getY());
+
+        bubble.tick();
+        Assert.assertEquals(2, character.getX());
+        Assert.assertEquals(0, character.getY());
+
+        bubble.tick();
+        Assert.assertEquals(2, character.getX());
+        Assert.assertEquals(1, character.getY());
+
+        bubble.tick();
+        Assert.assertEquals(2, character.getX());
+        Assert.assertEquals(2, character.getY());
+
+        bubble.tick();
+        Assert.assertEquals(1, character.getX());
+        Assert.assertEquals(2, character.getY());
+
+        bubble.tick();
+        Assert.assertEquals(0, character.getX());
+        Assert.assertEquals(2, character.getY());
+
+        bubble.tick();
+        Assert.assertEquals(0, character.getX());
+        Assert.assertEquals(1, character.getY());
+
+        bubble.tick();
+        Assert.assertEquals(0, character.getX());
+        Assert.assertEquals(0, character.getY());
+    }
+
+    @Test
     public void testMovingTogether() {
         MapTile[][] map = {
                 {

@@ -17,6 +17,10 @@ public class Human extends Movable {
         this.scarf = scarf;
     }
 
+    public Transport getTransport() {
+        return transport;
+    }
+
     public void getIntoTransport(Transport transport) {
         if (transport.addPassenger(this)) {
             if (this.transport != null) {
