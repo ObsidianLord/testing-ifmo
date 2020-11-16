@@ -15,16 +15,9 @@ import java.util.function.BiFunction;
 @RunWith(Parameterized.class)
 public class TargetFunctionTest {
     private final static double DEFAULT_DELTA = 1e-3;
-
-    private final double arg;
-    private final double expected;
-    private final double delta;
     private final TargetFunc targetFunc;
 
-    public TargetFunctionTest(MathLib mathLib, double arg, double expected, double delta) {
-        this.arg = arg;
-        this.expected = expected;
-        this.delta = delta;
+    public TargetFunctionTest(MathLib mathLib) {
         this.targetFunc = new TargetFunc(mathLib);
     }
 
@@ -73,42 +66,27 @@ public class TargetFunctionTest {
         };
         MathLib myLib = new CustomMath();
         return Arrays.asList(new Object[][]{
-                // Mock x <= 0
-                {mockLib, -0.6, 4.881, DEFAULT_DELTA},
-                {mockLib, -2.163, 0, DEFAULT_DELTA},
-                {mockLib, -3.989, 0, DEFAULT_DELTA},
-                {mockLib, -3.82, -1.169, DEFAULT_DELTA},
-                {mockLib, 0, Double.POSITIVE_INFINITY, DEFAULT_DELTA},
-                {mockLib, Double.NEGATIVE_INFINITY, Double.NaN, DEFAULT_DELTA},
-
-                // Mock x > 0
-                {mockLib, 0.6, 1.556, DEFAULT_DELTA},
-                {mockLib, 0.862, 0, DEFAULT_DELTA},
-                {mockLib, 0.929, -0.046, DEFAULT_DELTA},
-                {mockLib, 1, 0, DEFAULT_DELTA},
-                {mockLib, 1.514, 1.96, DEFAULT_DELTA},
-                {mockLib, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, DEFAULT_DELTA},
-
-                // Custom x <= 0
-                {myLib, -0.6, 4.881, DEFAULT_DELTA},
-                {myLib, -2.163, 0, DEFAULT_DELTA},
-                {myLib, -3.989, 0, DEFAULT_DELTA},
-                {myLib, -3.82, -1.169, DEFAULT_DELTA},
-                {myLib, 0, Double.POSITIVE_INFINITY, DEFAULT_DELTA},
-                {myLib, Double.NEGATIVE_INFINITY, Double.NaN, DEFAULT_DELTA},
-
-                // Custom x > 0
-                {myLib, 0.6, 1.556, DEFAULT_DELTA},
-                {myLib, 0.862, 0, DEFAULT_DELTA},
-                {myLib, 0.929, -0.046, DEFAULT_DELTA},
-                {myLib, 1, 0, DEFAULT_DELTA},
-                {myLib, 1.514, 1.96, DEFAULT_DELTA},
-                {myLib, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, DEFAULT_DELTA},
+                {mockLib},
+                {myLib}
         });
     }
 
     @Test
     public void testCalculation() throws IOException {
-        Assert.assertEquals(expected, targetFunc.calculate(arg, delta), delta);
+        // x <= 0
+        Assert.assertEquals(4.881, targetFunc.calculate(-0.6, DEFAULT_DELTA), DEFAULT_DELTA);
+        Assert.assertEquals(0, targetFunc.calculate(-2.163, DEFAULT_DELTA), DEFAULT_DELTA);
+        Assert.assertEquals(0, targetFunc.calculate(-3.989, DEFAULT_DELTA), DEFAULT_DELTA);
+        Assert.assertEquals(-1.169, targetFunc.calculate(-3.82, DEFAULT_DELTA), DEFAULT_DELTA);
+        Assert.assertEquals(Double.POSITIVE_INFINITY, targetFunc.calculate(0, DEFAULT_DELTA), DEFAULT_DELTA);
+        Assert.assertEquals(Double.NaN, targetFunc.calculate(Double.NEGATIVE_INFINITY, DEFAULT_DELTA), DEFAULT_DELTA);
+
+        // x > 0
+        Assert.assertEquals(1.556, targetFunc.calculate(0.6, DEFAULT_DELTA), DEFAULT_DELTA);
+        Assert.assertEquals(0, targetFunc.calculate(0.862, DEFAULT_DELTA), DEFAULT_DELTA);
+        Assert.assertEquals(-0.046, targetFunc.calculate( 0.929, DEFAULT_DELTA), DEFAULT_DELTA);
+        Assert.assertEquals(0, targetFunc.calculate(1, DEFAULT_DELTA), DEFAULT_DELTA);
+        Assert.assertEquals(1.96, targetFunc.calculate(1.514, DEFAULT_DELTA), DEFAULT_DELTA);
+        Assert.assertEquals(Double.POSITIVE_INFINITY, targetFunc.calculate(Double.POSITIVE_INFINITY, DEFAULT_DELTA), DEFAULT_DELTA);
     }
 }
