@@ -66,8 +66,8 @@ public class TargetFunctionTest {
         };
         MathLib myLib = new CustomMath();
         return Arrays.asList(new Object[][]{
-                {mockLib},
-                {myLib}
+                { mockLib },
+                { myLib }
         });
     }
 
